@@ -71,7 +71,7 @@ PathfindHelper.prototype.pathfind_setMoveDir4D = function(actor_source, actor_ta
     		//The actual movement should be handled by the enemy's own code
     		if(path[1].x > x1){
     		    if(actor_source.body.blocked.right){
-    		        if(actor_target.y > actor_source.y){
+    		        if(actor_target.y < (path[1].y * this.mapTileSize)){
     		            actor_source.movedir = DIR_SOUTH;
     		        }else{
     		            actor_source.movedir = DIR_NORTH;
@@ -81,7 +81,7 @@ PathfindHelper.prototype.pathfind_setMoveDir4D = function(actor_source, actor_ta
     		    }
     		}else if(path[1].x < x1){
     		    if(actor_source.body.blocked.left){
-    		        if(actor_target.y > actor_source.y){
+    		        if(actor_target.y < (path[1].y * this.mapTileSize)){
     		            actor_source.movedir = DIR_SOUTH;
     		        }else{
     		            actor_source.movedir = DIR_NORTH;
@@ -91,7 +91,7 @@ PathfindHelper.prototype.pathfind_setMoveDir4D = function(actor_source, actor_ta
     		    }
     		}else if(path[1].y > y1){
     		    if(actor_source.body.blocked.down){
-    		        if(actor_target.x > actor_source.x){
+    		        if(actor_target.x < (path[1].x * this.mapTileSize)){
     		            actor_source.movedir = DIR_EAST;
     		        }else{
     		            actor_source.movedir = DIR_WEST;
@@ -102,7 +102,7 @@ PathfindHelper.prototype.pathfind_setMoveDir4D = function(actor_source, actor_ta
     			
     		}else if(path[1].y < y1){
     		    if(actor_source.body.blocked.up){
-    		        if(actor_target.x > actor_source.x){
+    		        if(actor_target.x < (path[1].x * this.mapTileSize)){
     		            actor_source.movedir = DIR_EAST;
     		        }else{
     		            actor_source.movedir = DIR_WEST;
