@@ -18,7 +18,10 @@ TitleScreen.prototype.preload = function(){
     game.load.spritesheet('pumpkin', 'assets/img/sprites/pumpkins.png', 64, 64);
     game.load.spritesheet('spikeball01', 'assets/img/sprites/spoopyspikeball01.png', 32, 32);
     game.load.spritesheet('vampire', 'assets/img/sprites/sp_vampire.png', 64, 64);
+    
     game.load.spritesheet('spider', 'assets/img/sprites/sp_spider.png', 64, 64);
+    game.load.spritesheet('bullet_spider', 'assets/img/sprites/bullet_spider.png', 64, 64);
+    game.load.spritesheet('eff_spiderweb', 'assets/img/sprites/spiderweb.png', 64, 64);
 }
 
 TitleScreen.prototype.create = function(){

@@ -353,6 +353,22 @@ Player.prototype.processControls = function(){
 }
 
 Player.prototype.attack = function(evt){
+    
+    switch(this.dir * 2){
+        case DIR_EAST:
+            game.state.getCurrentState().createBullet(this.x, this.y, "spider", true, DIR_EAST);
+            break;
+        case DIR_WEST:
+            game.state.getCurrentState().createBullet(this.x, this.y, "spider", true, DIR_WEST);
+            break;
+        case DIR_NORTH:
+            game.state.getCurrentState().createBullet(this.x, this.y, "spider", true, DIR_NORTH);
+            break;
+        case DIR_SOUTH:
+            game.state.getCurrentState().createBullet(this.x, this.y, "spider", true, DIR_SOUTH);
+            break;
+    }
+    /*
      //create hitbox depending on facing.
      var hbx;
      var hby;
@@ -369,6 +385,7 @@ Player.prototype.attack = function(evt){
      }
      hby = this.y + (this.height / 2) - this.attackBox.h / 2;
      this.gamestate.createHitBox(hbx, hby, this.attackBox.w, this.attackBox.h, true, 50);
+     */
 }
 
 Player.prototype.onDeath = function(){

@@ -38,6 +38,9 @@ TmxLevel.prototype.create = function() {
     //init sprite groups
     this.enemies = game.add.group();
     this.enemies_contactdamage = game.add.group();
+    this.bullets = game.add.group();
+    this.effects = game.add.group();
+    this.particles = game.add.group();
     this.pumpkins = game.add.group();
     this.hitboxes_unfriendly = game.add.group();
     this.hitboxes_friendly = game.add.group();
@@ -172,6 +175,38 @@ TmxLevel.prototype.createHazardsFromMap = function(hzd){
         console.log("invalid spikes: " + hzd.gid)
     }
 }
+
+/**
+ * Use this to create bullets rather than using external code
+ */
+ 
+TmxLevel.prototype.createBullet = function(X, Y, type, friendly, dir){
+    var newbullet;
+    switch(type){
+        case "spider":
+            newbullet = new BulletSpider(X, Y, friendly, dir);
+            break;
+    }
+    //if(newbullet){
+        this.bullets.add(newbullet);
+    //}
+};
+
+/**
+ * Use this to create effects rather than using external code
+ */
+
+TmxLevel.prototype.createEffect = function(X, Y, type, friendly, dir){
+    var neweffect;
+    switch(type){
+        case "spiderweb":
+            neweffect = new EffSpiderWeb(X, Y);
+            break;
+    }
+    //if(newbullet){
+        this.effects.add(neweffect);
+    //}
+};
 
 TmxLevel.prototype.createHitBox = function(X, Y, W, H, friendly, lifespan, seek){
     var spr = game.add.sprite(X, Y, 'blanksprite');
