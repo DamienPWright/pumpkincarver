@@ -5,6 +5,7 @@ function Actor(X, Y, key, HP){
         this.maxHP = HP;
     }
     this.curHP = this.maxHP;
+    this.status_effects = [];
     this.blinkTimer = 30;
     this.blinkCount = 0;
     this.blinking = false;
@@ -14,6 +15,7 @@ function Actor(X, Y, key, HP){
     
     this.DEF_MAXVELOCITY = 0;
     this.abs_maxvelocity = this.DEF_MAXVELOCITY;
+    this.movespeed_mod = 1.0;
     
     this.movedir = DIR_NORTH;
     
@@ -38,6 +40,8 @@ Actor.prototype.updateActor = function(){
     if(this.blinking){
         this.blink();
     }
+    this.normaliseStats();
+    this.updateStatusEffects();
 }
 
 Actor.prototype.blink = function(){
@@ -134,5 +138,30 @@ Actor.prototype.pickRandomDir4D = function(){
         case 3:
             this.movedir = DIR_WEST;
             break;
+    }
+}
+
+Actor.prototype.updateStatusEffects = function(){
+    for(var i in this.status_effects){
+        this.status_effects[i].update();
+        if(this.status_effects[i].dead){
+            this.status_effects.splice(i, 1);
+        }
+    }
+}
+/**
+ * @desc - Called before running through status effects. This sets the values back to their standard
+ */
+Actor.prototype.normaliseStats = function(){
+   this.movespeed_mod = 1.0; 
+}
+
+/**
+ * @param {StatusEffect} se
+ */
+Actor.prototype.inflictStatusEffect = function(se){
+    if(se){
+        //may want to include a check that refreshes an se if it already exists
+        this.status_effects.push(se);
     }
 }
