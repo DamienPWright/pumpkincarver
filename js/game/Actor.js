@@ -75,37 +75,37 @@ Actor.prototype.updateAnimation = function(){
     //override this for animations
 }
 
-Actor.prototype.checkSeekBox = function(posKey, target){
+Actor.prototype.checkSeekBox = function(posKey, target, seekbox, width, height){
     var detected = false;
-    //console.log(poskey);
+    console.log(width + " " + height);
     switch(posKey){
         case DIR_NORTH:
-            this.seekBox.width = this.seekBoxWidth;
-            this.seekBox.height = this.seekBoxLength;
-            this.seekBox.x = this.body.x - (this.seekBox.body.width / 2) + (this.body.width / 2);
-            this.seekBox.y = this.body.y - this.seekBox.body.height
+            seekbox.width = width;
+            seekbox.height = height;
+            seekbox.x = this.body.x - (seekbox.width / 2) + (this.body.width / 2);
+            seekbox.y = this.body.y - seekbox.body.height
             break;
         case DIR_SOUTH:
-            this.seekBox.width = this.seekBoxWidth;
-            this.seekBox.height = this.seekBoxLength;
-            this.seekBox.x = this.body.x - (this.seekBox.body.width / 2) + (this.body.width / 2);
-            this.seekBox.y = this.body.y + this.body.height;
+            seekbox.width = width;
+            seekbox.height = height;
+            seekbox.x = this.body.x - (this.seekBox.body.width / 2) + (this.body.width / 2);
+            seekbox.y = this.body.y + this.body.height;
             break;
         case DIR_EAST:
-            this.seekBox.width = this.seekBoxLength;
-            this.seekBox.height = this.seekBoxWidth;
-            this.seekBox.x = this.body.x + this.body.width
-            this.seekBox.y = this.body.y - (this.seekBox.body.height / 2) + (this.body.height / 2)
+            seekbox.width = height;
+            seekbox.height = width;
+            seekbox.x = this.body.x + this.body.width
+            seekbox.y = this.body.y - (seekbox.body.height / 2) + (this.body.height / 2)
             break;
         case DIR_WEST:
-            this.seekBox.width = this.seekBoxLength;
-            this.seekBox.height = this.seekBoxWidth;
-            this.seekBox.x = this.body.x - this.seekBox.body.width
-            this.seekBox.y = this.body.y - (this.seekBox.body.height / 2) + (this.body.height / 2)
+            seekbox.width = height;
+            seekbox.height = width;
+            seekbox.x = this.body.x - seekbox.body.width
+            seekbox.y = this.body.y - (seekbox.body.height / 2) + (this.body.height / 2)
             break;
         case 'centered':
-            this.seekBox.x = this.x + (this.width / 2) + (this.seekBoxSize.w / 2);
-            this.seekBox.y = this.y;
+            seekbox.x = this.x + (this.width / 2) + (seekbox.body.width / 2);
+            seekbox.y = this.y;
             break;
     }
     if(this.seekBox.overlap(target)){

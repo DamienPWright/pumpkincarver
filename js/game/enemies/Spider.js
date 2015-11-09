@@ -22,7 +22,11 @@ function Spider(X, Y){
     this.seekBoxWidth = 128;
     this.seekBoxLength = 256;
     this.seekBoxSize = {w: this.seekBoxWidth , h: this.seekBoxLength};
+    this.attackBoxWidth = 16;
+    this.attackBoxLength = 256;
+    this.attackBoxSize = {w: this.attackBoxWidth , h: this.attackBoxLength};
     this.seekBox = game.state.getCurrentState().createHitBox(this.x, this.y, this.seekBoxSize.w, this.seekBoxSize.h, false, 0, true);
+    this.attackBox = game.state.getCurrentState().createHitBox(this.x, this.y, this.attackBoxSize.w, this.attackBoxSize.h, false, 0, true);
     
     //wander around - if player is inside seekbox check if line-of-sight exists. If true, persue
     
@@ -53,7 +57,9 @@ function Spider(X, Y){
         if(this.actor.wait_count <= 0){
             this.actor.fsm.changeState(this.actor.state_Walk);
         }
-        this.actor.checkSeekBox(this.actor.movedir, player);
+        if(this.actor.checkSeekBox(this.actor.movedir, player, this.actor.seekBox, this.actor.seekBoxWidth, this.actor.seekBoxLength)){
+            this.actor.fsm.changeState(this.actor.state_Persue);
+        };
     };
     
     
@@ -82,7 +88,7 @@ function Spider(X, Y){
         if(this.actor.walk_count <= 0){
             this.actor.fsm.changeState(this.actor.state_Wait);
         }
-        if(this.actor.checkSeekBox(this.actor.movedir, player)){
+        if(this.actor.checkSeekBox(this.actor.movedir, player, this.actor.seekBox, this.actor.seekBoxWidth, this.actor.seekBoxLength)){
             this.actor.fsm.changeState(this.actor.state_Persue);
         };
     };
