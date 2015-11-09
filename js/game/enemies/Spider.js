@@ -8,8 +8,17 @@ function Spider(X, Y){
     this.abs_maxvelocity = this.DEF_MAXVELOCITY;
     
     this.persue_count = 0;
-    this.PERSUE_TIME = 30;
+    this.PERSUE_TIME = 8000; //milliseconds
     this.persue_speed = 200;
+    
+    this.preattack_count = 0;
+    this.PREATTACK_TIME = 2000; //milliseconds
+    
+    this.takeaim_count = 0;
+    this.TAKEAIM_TIME = 500; //milliseconds
+    
+    this.attacking_count = 0;
+    this.ATTACKING_TIME = 500; //milliseconds
     
     this.wait_count = 0;
     this.WAIT_TIME = 240;
@@ -22,8 +31,8 @@ function Spider(X, Y){
     this.seekBoxWidth = 128;
     this.seekBoxLength = 256;
     this.seekBoxSize = {w: this.seekBoxWidth , h: this.seekBoxLength};
-    this.attackBoxWidth = 16;
-    this.attackBoxLength = 256;
+    this.attackBoxWidth = 32;
+    this.attackBoxLength = 512;
     this.attackBoxSize = {w: this.attackBoxWidth , h: this.attackBoxLength};
     this.seekBox = game.state.getCurrentState().createHitBox(this.x, this.y, this.seekBoxSize.w, this.seekBoxSize.h, false, 0, true);
     this.attackBox = game.state.getCurrentState().createHitBox(this.x, this.y, this.attackBoxSize.w, this.attackBoxSize.h, false, 0, true);
@@ -42,7 +51,7 @@ function Spider(X, Y){
         this.actor.updateAnimation = this.actor.wanderAnimation;
         //set waiting time
         this.actor.wait_count = this.actor.WAIT_TIME;
-        console.log("Spider is waiting");
+        //console.log("Spider is waiting");
         this.actor.body.velocity.x = 0;
         this.actor.body.velocity.y = 0;
     };
@@ -101,6 +110,9 @@ function Spider(X, Y){
        
        //set persue speed
        this.actor.abs_maxvelocity = this.actor.persue_speed;
+       
+       this.actor.persue_count = this.actor.PERSUE_TIME;
+       this.actor.preattack_count = this.actor.PREATTACK_TIME;
     };
     
     this.state_Persue.onExit = function(){
@@ -118,8 +130,51 @@ function Spider(X, Y){
             this.actor.pathfind_poll_counter = this.actor.pathfind_pollrate;
         }
         this.actor.moveStrategy(this.actor);
-        //check distance to player
-        //if it's higher than a given amount, count down
+        
+        //checks to see if it can still see the player, giving up after its lost sight for enough time.
+        if(this.actor.checkSeekBox(this.actor.movedir, player, this.actor.seekBox, this.actor.seekBoxWidth, this.actor.seekBoxLength)){
+            this.actor.persue_count = this.actor.PERSUE_TIME;
+        }else{
+            this.actor.persue_count -= game.time.physicsElapsedMS;
+            if(this.actor.persue_count <= 0){
+                this.actor.fsm.changeState(this.actor.state_Wait);
+            }
+        };
+        
+        //checks to see if it can shoot the player, attacking after the player has been in its sight for long enough
+        if(this.actor.checkSeekBox(this.actor.movedir, player, this.actor.attackBox, this.actor.attackBoxWidth, this.actor.attackBoxLength)){
+            this.actor.preattack_count -= game.time.physicsElapsedMS;
+        }
+        if(this.actor.preattack_count <= 0){
+            this.actor.fsm.changeState(this.actor.state_Attack);
+        }
+    };
+    
+    //Attack
+    this.state_Attack = new ActorState(this);
+    this.state_Attack.onEnter = function(){
+        this.actor.body.velocity.x = 0;
+        this.actor.body.velocity.y = 0;
+        this.actor.takeaim_count = this.actor.TAKEAIM_TIME;
+        this.actor.attacking_count = this.actor.ATTACKING_TIME;
+        this.attacked = false;
+    };
+    
+    this.state_Attack.onExit = function(){
+        
+    };
+    this.state_Attack.update = function(){
+        this.actor.takeaim_count -= game.time.physicsElapsedMS;
+        if(this.actor.takeaim_count <= 0){
+            if(!this.attacked){
+                this.attacked = true;
+                this.actor.fireSpiderBullet();
+            }
+            this.actor.attacking_count -= game.time.physicsElapsedMS;
+            if(this.actor.attacking_count <= 0){
+                this.actor.fsm.changeState(this.actor.state_Persue);
+            }
+        }
     };
     this.fsm.changeState(this.state_Wait);
     
@@ -221,4 +276,21 @@ Spider.prototype.persueAnimation = function(){
 
 Spider.prototype.render = function(){
     game.debug.geom(this.los_detector);
+}
+
+Spider.prototype.fireSpiderBullet = function(){
+    switch(this.movedir){
+        case DIR_EAST:
+            game.state.getCurrentState().createBullet(this.body.x + this.body.width, this.body.y + (this.body.height / 2), "spider", false, DIR_EAST);
+            break;
+        case DIR_WEST:
+            game.state.getCurrentState().createBullet(this.body.x, this.body.y + (this.body.height / 2), "spider", false, DIR_WEST);
+            break;
+        case DIR_NORTH:
+            game.state.getCurrentState().createBullet(this.body.x + (this.body.width / 2), this.body.y, "spider", false, DIR_NORTH);
+            break;
+        case DIR_SOUTH:
+            game.state.getCurrentState().createBullet(this.body.x + (this.body.width / 2), this.body.y + this.body.height, "spider", false, DIR_SOUTH);
+            break;
+    }
 }

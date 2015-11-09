@@ -77,7 +77,7 @@ Actor.prototype.updateAnimation = function(){
 
 Actor.prototype.checkSeekBox = function(posKey, target, seekbox, width, height){
     var detected = false;
-    console.log(width + " " + height);
+    //console.log(width + " " + height);
     switch(posKey){
         case DIR_NORTH:
             seekbox.width = width;
@@ -88,7 +88,7 @@ Actor.prototype.checkSeekBox = function(posKey, target, seekbox, width, height){
         case DIR_SOUTH:
             seekbox.width = width;
             seekbox.height = height;
-            seekbox.x = this.body.x - (this.seekBox.body.width / 2) + (this.body.width / 2);
+            seekbox.x = this.body.x - (seekbox.body.width / 2) + (this.body.width / 2);
             seekbox.y = this.body.y + this.body.height;
             break;
         case DIR_EAST:
@@ -108,7 +108,7 @@ Actor.prototype.checkSeekBox = function(posKey, target, seekbox, width, height){
             seekbox.y = this.y;
             break;
     }
-    if(this.seekBox.overlap(target)){
+    if(seekbox.overlap(target)){
         detected = true;
     }
     //Now check line of sight
@@ -162,6 +162,26 @@ Actor.prototype.normaliseStats = function(){
 Actor.prototype.inflictStatusEffect = function(se){
     if(se){
         //may want to include a check that refreshes an se if it already exists
-        this.status_effects.push(se);
+        if(this.status_effects.length == 0){
+            this.status_effects.push(se);
+            return;
+        }
+        for(var i in this.status_effects){
+            //console.log(this.status_effects[i].statuseffect_id  + " " + se.statuseffect_id)
+            if(this.status_effects[i].statuseffect_id == se.statuseffect_id){
+                //check stacking behaviour
+                if(se.stacks){
+                    this.status_effects.push(se);
+                    return;
+                }
+                if(se.re_applicable){
+                    this.status_effects[i].duration = se.duration;
+                    //console.log("reapplied")
+                    return;
+                }else{
+                    return;
+                }
+            }
+        }
     }
 }

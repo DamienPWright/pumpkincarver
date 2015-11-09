@@ -13,10 +13,8 @@ EffSpiderWeb.prototype.update = function(){
         }
         game.physics.arcade.overlap(this, game.state.getCurrentState().enemies, this.onContactEffect, null, this)
     }
-    
-    
 }
 
 EffSpiderWeb.prototype.onContactEffect = function(obja, objb){
-    console.log(objb);
+    objb.inflictStatusEffect(new SEWebbed(objb));
 }

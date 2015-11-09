@@ -1,5 +1,6 @@
 SEWebbed = function(actor){
-    StatusEffect.call(this, actor, 4000);
+    StatusEffect.call(this, actor, 4000, false, true);
+    this.statuseffect_id = 1;
 }
 
 SEWebbed.prototype = new StatusEffect();
